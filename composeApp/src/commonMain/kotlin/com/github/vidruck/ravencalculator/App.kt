@@ -14,29 +14,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.github.vidruck.ravencalculator.domain.model.ModoCalculadora
+import com.github.vidruck.ravencalculator.infrastructure.ui.components.BarraNavegacionRaven
+import com.github.vidruck.ravencalculator.infrastructure.ui.components.PantallaCalculadora
+import  com.github.vidruck.ravencalculator.infrastructure.ui.components.PantallaGeometria
 import com.github.vidruck.ravencalculator.infrastructure.ui.theme.RavenTheme
 import com.github.vidruck.ravencalculator.infrastructure.ui.viewmodel.RavenViewModel
 @Composable
-@Preview
 fun App() {
-    val viewModel = remember {RavenViewModel()
-    }
-    RavenTheme{
-        Surface(modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background) {
+    val viewModel = remember { RavenViewModel() }
+
+    RavenTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = viewModel.textoPantalla,
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+
+                // 1. Navegación superior
+                BarraNavegacionRaven(
+                    modoActual = viewModel.modoActual,
+                    onModoCambiado = { viewModel.cambiarModo(it) }
                 )
+
+                // 2. Selector de Vistas (Arquitectura limpia)
                 when (viewModel.modoActual) {
-                    is ModoCalculadora.Basico -> {
-                    }
-                    is ModoCalculadora.Cientifico -> {
+                    is ModoCalculadora.Basico, is ModoCalculadora.Cientifico -> {
+                        PantallaCalculadora(viewModel) // Tu UI de la calculadora tradicional
                     }
                     is ModoCalculadora.Geometrica -> {
+                        PantallaGeometria(viewModel) // La nueva UI de geometría
                     }
                 }
             }
