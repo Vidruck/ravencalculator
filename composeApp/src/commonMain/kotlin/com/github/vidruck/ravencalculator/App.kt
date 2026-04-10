@@ -30,19 +30,16 @@ fun App() {
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
 
-                // 1. Navegación superior
                 BarraNavegacionRaven(
                     modoActual = viewModel.modoActual,
                     onModoCambiado = { viewModel.cambiarModo(it) }
                 )
-
-                // 2. Selector de Vistas (Arquitectura limpia)
                 when (viewModel.modoActual) {
                     is ModoCalculadora.Basico, is ModoCalculadora.Cientifico -> {
-                        PantallaCalculadora(viewModel) // Tu UI de la calculadora tradicional
+                        PantallaCalculadora(viewModel)
                     }
                     is ModoCalculadora.Geometrica -> {
-                        PantallaGeometria(viewModel) // La nueva UI de geometría
+                        PantallaGeometria(viewModel)
                     }
                 }
             }

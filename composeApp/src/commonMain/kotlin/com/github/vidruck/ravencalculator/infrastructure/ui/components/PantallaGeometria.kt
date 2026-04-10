@@ -1,16 +1,23 @@
 package com.github.vidruck.ravencalculator.infrastructure.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.github.vidruck.ravencalculator.domain.model.FiguraGeometrica
 import com.github.vidruck.ravencalculator.infrastructure.ui.theme.RavenCyan
 import com.github.vidruck.ravencalculator.infrastructure.ui.viewmodel.RavenViewModel
+import org.jetbrains.compose.resources.painterResource
+import raven_calculator.composeapp.generated.resources.Res
+import raven_calculator.composeapp.generated.resources.circulo
+import raven_calculator.composeapp.generated.resources.cuadrado
+import raven_calculator.composeapp.generated.resources.rectangulo
+import raven_calculator.composeapp.generated.resources.triangulo_rec
 
 @Composable
 fun PantallaGeometria(viewModel: RavenViewModel){
@@ -23,7 +30,7 @@ fun PantallaGeometria(viewModel: RavenViewModel){
 
     val botonHabilitado = when (figuraSeleccionada){
         is FiguraGeometrica.Cuadrado, is FiguraGeometrica.Circulo -> esInput1Valido
-        is FiguraGeometrica.Rectangulo, is FiguraGeometrica.Triangulo -> esInput2Valido
+        is FiguraGeometrica.Rectangulo, is FiguraGeometrica.Triangulo -> esInput1Valido && esInput2Valido
     }
     Column (
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -69,13 +76,30 @@ fun PantallaGeometria(viewModel: RavenViewModel){
                 )
             )
         }
+        Box(
+            modifier = Modifier.fillMaxWidth().height(150.dp).padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val imagenRecurso = when (figuraSeleccionada) {
+                FiguraGeometrica.Cuadrado -> Res.drawable.cuadrado
+                FiguraGeometrica.Rectangulo -> Res.drawable.rectangulo
+                FiguraGeometrica.Circulo -> Res.drawable.circulo
+                FiguraGeometrica.Triangulo -> Res.drawable.triangulo_rec
+            }
+
+            Image(
+                painter = painterResource(imagenRecurso),
+                contentDescription = "Ilustración de ${figuraSeleccionada.nombre}",
+                modifier = Modifier.fillMaxHeight()
+            )
+        }
         Button(
             onClick = {
                 val datos = mutableMapOf<String, Double> ()
                 if (figuraSeleccionada is FiguraGeometrica.Circulo) datos["radio"] = input1.toDouble()
                 else if (figuraSeleccionada is FiguraGeometrica.Cuadrado) datos["lado"] = input1.toDouble()
                 else {
-                    datos["Base"] = input1.toDouble()
+                    datos["base"] = input1.toDouble()
                     datos["altura"] = input2.toDouble()
                 }
                 viewModel.calcularResultadoGeometrico(figuraSeleccionada, datos)

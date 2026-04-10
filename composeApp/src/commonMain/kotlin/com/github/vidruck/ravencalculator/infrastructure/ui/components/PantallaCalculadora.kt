@@ -3,6 +3,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,13 +36,27 @@ fun PantallaCalculadora(viewModel: RavenViewModel) {
             }
         }
 
-        val botones = listOf(
-            listOf("C", "DEL", "sin", "/"),
-            listOf("7", "8", "9", "*"),
-            listOf("4", "5", "6", "-"),
-            listOf("1", "2", "3", "+"),
-            listOf("0", ".", "PI", "=")
-        )
+        var modoAvanzado by remember { mutableStateOf(false) }
+
+        val botones = if (modoAvanzado) {
+            listOf(
+                listOf("sin", "cos", "tan", "sqrt"),
+                listOf("log", "ln", "(", ")"),
+                listOf("C", "DEL", "^", "/"),
+                listOf("7", "8", "9", "*"),
+                listOf("4", "5", "6", "-"),
+                listOf("1", "2", "3", "+"),
+                listOf("BAS", "0", ".", "=")
+            )
+        } else {
+            listOf(
+                listOf("C", "DEL", "%", "/"),
+                listOf("7", "8", "9", "*"),
+                listOf("4", "5", "6", "-"),
+                listOf("1", "2", "3", "+"),
+                listOf("SCI", "0", ".", "=")
+            )
+        }
 
         Column(modifier = Modifier.weight(0.7f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             botones.forEach { fila ->
@@ -54,6 +72,7 @@ fun PantallaCalculadora(viewModel: RavenViewModel) {
                                     "=" -> viewModel.calcularResultadoAritmetico()
                                     "C" -> viewModel.limpiarPantalla()
                                     "DEL" -> viewModel.eliminarUltimo()
+                                    "SCI", "BAS" -> modoAvanzado = !modoAvanzado
                                     else -> viewModel.añadirCaracter(etiqueta)
                                 }
                             },
